@@ -32,6 +32,7 @@ productsList.addEventListener('click', e => {
 			quantity: 1,
 			title: product.querySelector('h2').textContent,
 			price: product.querySelector('p').textContent,
+			id: product.querySelector('id').textContent,
 		};
 
 		const exits = allProducts.some(
@@ -125,3 +126,74 @@ const showHTML = () => {
 	valorTotal.innerText = `$${total}`;
 	countProducts.innerText = totalOfProducts;
 };
+//CheckOut
+var allPurchases = [];
+//allPurchases[0]=1;
+var allPurchasesquantity = [];
+//allPurchasesquantity [0]=1;
+var allPurchasesprices = [];
+var allPurchasesSize=0;
+function setAllPurchases(){
+    
+    allProducts.forEach(product => {
+        
+        allPurchases.push(product.id);
+        allPurchasesquantity.push(product.quantity);
+        allPurchasesprices.push(product.price);
+        allPurchasesSize++;
+        //alert("Guardando elemento...."+allPurchasesSize+": "+allPurchases[allPurchasesSize]+"-"+allPurchasesquantity[allPurchasesSize]);
+    });
+}
+
+function checkout(){
+    //Guardar el carrito y pasarlo a CheckOut.php
+    setAllPurchases();
+    
+    //Ir a checkout
+    if(allPurchasesSize>0){
+        alert("Ingresa tus datos para continuar...");
+        openForm();
+    }else{
+        alert("Carrito vacio");
+    }
+    
+}
+document.getElementById('myForm').addEventListener('submit',(e) =>{
+    e.preventDefault();
+    const userName = document.getElementById('userName').value;
+    const userMail = document.getElementById('userMail').value;
+    const userAdress = document.getElementById('userAdress').value;
+    localStorage.setItem('Name',userName);
+    localStorage.setItem('Mail',userMail);
+    localStorage.setItem('Adress',userAdress);
+    console.log(localStorage.getItem('Name'));
+    console.log(localStorage.getItem('Mail'));
+    console.log(localStorage.getItem('Adress'));
+    setvalues();
+    
+    
+});
+function setvalues(){
+    
+    localStorage.setItem("Cart",JSON.stringify(allPurchases));
+    localStorage.setItem("Cartq",JSON.stringify(allPurchasesquantity));
+    localStorage.setItem("Price",JSON.stringify(allPurchasesprices));
+    localStorage.setItem("Index",allPurchasesSize);
+    let getObject = localStorage.getItem('Cart');
+    console.log(JSON.parse(getObject));
+    getObject = localStorage.getItem('Cartq');
+    console.log(JSON.parse(getObject));
+    getObject = localStorage.getItem('Price');
+    console.log(JSON.parse(getObject));
+    let index = localStorage.getItem('Index')
+    console.log(index);
+    alert("Terminando...");
+    location.href="include/checkout.php";
+}
+function openForm() {
+  document.getElementById("myForm").style.display = "block";
+}
+
+function closeForm() {
+  document.getElementById("myForm").style.display = "none";
+}
